@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Architecture & Theory - CIFAKE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .concept-card { border-left: 4px solid #2563eb; background: #ffffff; }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/"><i class="bi bi-shield-check text-primary"></i> CIFAKE</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link active" href="/model-info">Model Theory</a>
+                <a class="nav-link" href="/dashboard">Dashboard</a>
+                <a class="nav-link" href="/upload">Upload</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold">CIFAKE Architecture & Theoretical Foundations</h1>
+            <p class="lead text-muted">Comprehensive guide to dataset composition, dual CNN models, and Explainable AI</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card concept-card shadow-sm h-100 p-3">
+                    <h5 class="fw-bold text-primary"><i class="bi bi-database"></i> What is CIFAKE?</h5>
+                    <p class="text-muted">CIFAKE is a benchmark computer vision dataset designed specifically to research synthetic image detection. It comprises 120,000 images (32×32 pixels, 3 color channels):</p>
+                    <ul>
+                        <li><strong>REAL (60,000 images):</strong> Authentic natural photographs sourced directly from CIFAR-10 across 10 categories (airplanes, automobiles, birds, cats, deer, dogs, frogs, horses, ships, trucks).</li>
+                        <li><strong>FAKE (60,000 images):</strong> Synthetically generated images generated using Latent Diffusion Models (Stable Diffusion 1.4) prompted to emulate CIFAR-10 classes.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card concept-card shadow-sm h-100 p-3">
+                    <h5 class="fw-bold text-primary"><i class="bi bi-braces"></i> What is Standard CNN2D?</h5>
+                    <p class="text-muted">A baseline 2D Convolutional Neural Network consisting of hierarchical convolutional layers, non-linear activation functions (ReLU), and max-pooling, followed by a traditional <strong>Flatten()</strong> operation that vectorizes spatial feature maps into a 1D tensor connected to dense layers.</p>
+                    <p class="small text-danger"><strong>Limitation:</strong> The Flatten step introduces hundreds of thousands of parameters in the dense layer, making it prone to memorizing specific synthetic noise patterns rather than generalizable semantic artifacts.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card concept-card shadow-sm h-100 p-3">
+                    <h5 class="fw-bold text-success"><i class="bi bi-cpu-fill"></i> What is Modified CNN2D?</h5>
+                    <p class="text-muted">An enhanced architecture engineered to solve the shortcomings of the baseline CNN2D. It introduces two fundamental architectural improvements:</p>
+                    <ol>
+                        <li><strong>Global Average Pooling (GAP):</strong> A structural regularizer that averages each feature map over its entire spatial domain.</li>
+                        <li><strong>Dropout Regularization:</strong> Stochastic deactivation of neurons during training to prevent co-adaptation of synthetic feature detectors.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card concept-card shadow-sm h-100 p-3">
+                    <h5 class="fw-bold text-success"><i class="bi bi-grid-3x3"></i> What is Global Average Pooling (GAP)?</h5>
+                    <p class="text-muted">Instead of flattening an 8×8×128 feature map into an 8,192-dimensional vector (requiring over 1,000,000 weights to connect to a dense layer), GAP computes the spatial mean of each slice, reducing 8×8×128 directly to 128 scalar values. There are no trainable weights in GAP, drastically preventing overfitting.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card concept-card shadow-sm h-100 p-3">
+                    <h5 class="fw-bold text-info"><i class="bi bi-shuffle"></i> What is Dropout?</h5>
+                    <p class="text-muted">Dropout randomly sets a fraction (e.g. 25% to 40%) of input units to 0 at each update during training. This forces individual convolutional filters and projection neurons to learn independent, robust representations of AI diffusion artifacts rather than relying on brittle correlations.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card concept-card shadow-sm h-100 p-3">
+                    <h5 class="fw-bold text-danger"><i class="bi bi-eye-fill"></i> What is Grad-CAM & Why is it Critical?</h5>
+                    <p class="text-muted"><strong>Gradient-weighted Class Activation Mapping (Grad-CAM)</strong> computes the gradients of the classification score with respect to the final convolutional feature maps. It produces a coarse 2D localization heatmap highlighting the visual regions that exerted the highest influence on the classification output.</p>
+                    <p class="small text-muted"><strong>Scientific Value:</strong> In synthetic image detection, Grad-CAM allows human reviewers to verify whether the model is focusing on genuine diffusion anomalies (e.g., distorted eye pupils, blurred backgrounds, unnatural edges) or cheating on irrelevant border pixels.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mt-5 p-4">
+            <h4 class="fw-bold mb-3">Model Comparison Table</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Feature</th>
+                            <th>Standard CNN2D</th>
+                            <th>Modified CNN2D</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Spatial Aggregation</td>
+                            <td>Flatten() Layer</td>
+                            <td><strong>Global Average Pooling (GAP)</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Regularization</td>
+                            <td>None / Minimal</td>
+                            <td><strong>Spatial Dropout (0.25) & Dense Dropout (0.40)</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Batch Normalization</td>
+                            <td>None</td>
+                            <td><strong>Included after every Conv block</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Parameter Efficiency</td>
+                            <td>High parameter count (~320,000)</td>
+                            <td><strong>Parameter efficient (~82,000)</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Overfitting Susceptibility</td>
+                            <td>High on small datasets</td>
+                            <td><strong>Low due to GAP and Dropout</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Grad-CAM Localization</td>
+                            <td>Diffuse</td>
+                            <td><strong>Sharp, highly localized attention maps</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

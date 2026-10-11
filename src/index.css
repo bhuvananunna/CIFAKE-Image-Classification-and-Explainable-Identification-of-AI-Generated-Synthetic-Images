@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --canvas: #07090e;
+    --surface: #0e131f;
+    --surface-elevated: #141b2d;
+    --surface-hover: #1b243b;
+    --border: #1c2638;
+    --border-strong: #2a374f;
+    
+    --primary: #2563eb;
+    --primary-light: #3b82f6;
+    --accent: #06b6d4;
+    
+    --real: #059669;
+    --real-light: #10b981;
+    --real-bg: rgba(5, 150, 105, 0.08);
+    --real-border: rgba(16, 185, 129, 0.25);
+    
+    --fake: #dc2626;
+    --fake-light: #ef4444;
+    --fake-bg: rgba(220, 38, 38, 0.08);
+    --fake-border: rgba(239, 68, 68, 0.25);
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #64748b;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Accessible focus rings */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Tabular numbers for scientific notation */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Academic Report Print Styles */
+@media print {
+  header, footer, nav, button, .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+  .print-page {
+    page-break-after: always;
+  }
+  .academic-report-container {
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+}

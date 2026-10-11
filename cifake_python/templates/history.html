@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction History - CIFAKE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/dashboard"><i class="bi bi-shield-check text-primary"></i> CIFAKE</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/dashboard">Dashboard</a>
+                <a class="nav-link" href="/upload">Upload Image</a>
+                <a class="nav-link active" href="/history">History</a>
+                <a class="nav-link text-warning" href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 fw-bold"><i class="bi bi-clock-history text-primary"></i> Your Inference History</h4>
+                <a href="/upload" class="btn btn-sm btn-primary">Upload New</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Original Image</th>
+                                <th>Grad-CAM Heatmap</th>
+                                <th>Model Type</th>
+                                <th>Prediction</th>
+                                <th>Confidence</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if records %}
+                                {% for r in records %}
+                                <tr>
+                                    <td>{{ r.id }}</td>
+                                    <td>
+                                        <img src="/static/uploads/{{ r.original_path }}" alt="Original" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;">
+                                    </td>
+                                    <td>
+                                        <img src="/static/uploads/{{ r.gradcam_path }}" alt="Grad-CAM" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;">
+                                    </td>
+                                    <td><span class="badge bg-secondary">{{ r.model_type }}</span></td>
+                                    <td>
+                                        <span class="badge {{ 'bg-success' if r.prediction == 'REAL' else 'bg-danger' }} fs-6">
+                                            {{ r.prediction }}
+                                        </span>
+                                    </td>
+                                    <td><strong>{{ "%.2f"|format(r.confidence) }}%</strong></td>
+                                    <td class="text-muted small">{{ r.created_at }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        No prediction records found for your account.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

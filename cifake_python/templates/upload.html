@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image - CIFAKE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/dashboard"><i class="bi bi-shield-check text-primary"></i> CIFAKE</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/dashboard">Dashboard</a>
+                <a class="nav-link active" href="/upload">Upload Image</a>
+                <a class="nav-link" href="/history">History</a>
+                <a class="nav-link text-warning" href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3">
+                        <h4 class="mb-0 fw-bold"><i class="bi bi-cloud-arrow-up text-primary"></i> Upload Image for Classification</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                        <form method="POST" action="/upload" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Select Image (JPG, JPEG, PNG)</label>
+                                <input type="file" name="image" id="imageInput" class="form-control" accept=".jpg,.jpeg,.png" required onchange="previewFile()">
+                                <small class="text-muted">Maximum file size: 5MB. Standard CIFAKE resolution is 32x32 pixels.</small>
+                            </div>
+
+                            <div class="text-center my-3 d-none" id="previewContainer">
+                                <p class="text-muted small mb-1">Image Preview:</p>
+                                <img id="previewImg" src="#" alt="Preview" class="rounded border shadow-sm" style="max-height: 200px; max-width: 100%;">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Select Model Architecture</label>
+                                <select name="model_type" class="form-select">
+                                    <option value="modified_cnn2d" selected>Modified CNN2D (Global Average Pooling + Dropout - Recommended)</option>
+                                    <option value="cnn2d">Standard CNN2D (Traditional Flatten + Dense)</option>
+                                </select>
+                                <small class="text-muted">The Modified CNN2D utilizes GAP to eliminate dense layer parameter explosion.</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2 fs-5">
+                                <i class="bi bi-magic"></i> Classify & Generate Grad-CAM
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewFile() {
+            const preview = document.getElementById('previewImg');
+            const file = document.getElementById('imageInput').files[0];
+            const container = document.getElementById('previewContainer');
+            const reader = new FileReader();
+
+            reader.onloadend = function () {
+                preview.src = reader.result;
+                container.classList.remove('d-none');
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+                container.classList.add('d-none');
+            }
+        }
+    </script>
+</body>
+</html>
